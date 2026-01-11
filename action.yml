@@ -36,7 +36,7 @@ runs:
       run: |
         cat <<< "${{ inputs.name }}" | cut -c 1-40 | sed 's/ /%20/g' | xargs -0 -I '{}' echo name='{}' >> "$GITHUB_OUTPUT"
         cat <<< "${{ inputs.repositories }}" | tr ',' '\n' | tr ';' '\n' | grep -v '^$' | tr '\n' ',' | sed 's/,/, /g' | xargs -0 -I '{}' echo repositories='{}' >> "$GITHUB_OUTPUT"
-        cat <<< "${{ inputs.permissions }}"  | tr ',' '\n' | tr ';' '\n' | grep -v '^$' | tr '\n' '&' | tr ':' '=' | tr -d ' ' | xargs -0 -I '{}' echo permissions='{}' >> "$GITHUB_OUTPUT"
+        cat <<< "${{ inputs.permissions }}"  | tr ',' '\n' | tr ';' '\n' | perl -p -e 'chomp if eof' | tr '\n' '&' | tr ':' '=' | tr -d ' ' | xargs -0 -I '{}' echo permissions='{}' >> "$GITHUB_OUTPUT"
     - id: autopuppeteer
       uses: plengauer/autopuppeteer@v0.0.2
       with:
