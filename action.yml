@@ -45,3 +45,10 @@ runs:
         password: ${{ inputs.password }}
         cookie: ${{ inputs.cookie }}
         openai_api_token: ${{ inputs.openai_api_token }}
+    - id: verify
+      run: |
+        [ -r '${{ steps.autopuppeteer.outputs.result_path }}' ]
+        token="$(cat ${{ steps.autopuppeteer.outputs.result_path }})"
+        [ -n "$token" ]
+        echo ::add-mask::"$token"
+        curl --no-progress-meter --fail --header "Authorization: Bearer $token" "${GITHUB_API_URL:-https://api.github.com}/rate_limit
