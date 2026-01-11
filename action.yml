@@ -1,0 +1,47 @@
+name: 'Create GitHub Fine-grained PAT'
+inputs:
+  name:
+    description: 'The name of the token'
+    required: true
+  repositories:
+    description: 'A list (comma, semicolon, or linefeed separated) of repositories to restrict this repo to if any'
+    default: ''
+  permissions:
+    description: 'A list (comma, semicolon, or linefeed separated) of permissions key-value pairs (e.g., contents=write) to restrict this repo to if any'
+    default: ''
+  expiration:
+    description: 'The relative expiration of the token in days'
+    default: none
+  username:
+    description: 'The username of the user for which to create the token'
+    required: true
+  password:
+    description: 'The password of the user'
+    required: true
+  cookie:
+    description: 'A valid cookie of the user'
+    required: true
+  openai_api_token:
+    description: 'A valid API token for OpenAI'
+    required: true
+outputs:
+  token_path:
+    description: 'The path to a file containing the token'
+    value: ${{ steps.autopuppeteer.outputs.result_path }}
+runs:
+  using: composite
+  steps:
+    - id: metadata
+      run: |
+        cat <<< "${{ inputs.name }}" | cut -c 1-40 | sed 's/ /%20/g' | xargs -0 -I '{}' echo name='{}' >> "$GITHUB_OUTPUT"
+        cat <<< "${{ inputs.repositories }}" | tr ',' '\n' | tr ';' '\n' | grep -v '^$' | tr '\n' ',' | sed 's/,/, /g' | xargs -0 -I '{}' echo repositories='{}' >> "$GITHUB_OUTPUT
+        cat <<< "${{ inputs.permissions }}"  | tr ',' '\n' | tr ';' '\n' | grep -v '^$' | tr '\n' '&' | tr ':' '=' | tr -d ' ' | xargs -0 -I '{}' echo permissions='{}' >> "$GITHUB_OUTPUT
+    - id: autopuppeteer
+      uses: plengauer/autopuppeteer@v0.0.0
+      with:
+        goal: create a new finegrained PAT with the predefined name, scopes and expiration from the URL, restrict it to the repositories ${{ steps.metadata.outputs.repositories }}, the result should be the token value itself, make sure to record it because it cant be queried later (do not use "navigate back" to back out of the repo selection dialog, use the small x, the escape key, or click anywhere in the background)
+        url: https://github.com/settings/personal-access-tokens/new?name=${{ steps.metadata.outputs.name }}&expires_in=${{ inputs.expiration }}&${{ steps.metadata.outputs.permissions }}
+        username: ${{ inputs.username }}
+        password: ${{ inputs.password }}
+        cookie: ${{ inputs.cookie }}
+        openai_api_token: ${{ inputs.openai_api_token }}
