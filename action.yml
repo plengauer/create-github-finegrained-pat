@@ -31,7 +31,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - id: metadata
+    - id: setup-autopuppeteer
       shell: bash
       run: |
         cat <<< "${{ inputs.name }}" | cut -c 1-40 | sed 's/ /%20/g' | xargs -0 -I '{}' echo name='{}' >> "$GITHUB_OUTPUT"
@@ -40,14 +40,13 @@ runs:
     - id: autopuppeteer
       uses: plengauer/autopuppeteer@v0.0.2
       with:
-        goal: create a new finegrained PAT with the predefined name, scopes and expiration from the URL, restrict it to the repositories ${{ steps.metadata.outputs.repositories }}, the result should be the token value itself, make sure to record it because it cant be queried later (do not use "navigate back" to back out of the repo selection dialog, use the small x, the escape key, or click anywhere in the background)
-        url: https://github.com/settings/personal-access-tokens/new?name=${{ steps.metadata.outputs.name }}&expires_in=${{ inputs.expiration }}&${{ steps.metadata.outputs.permissions }}
+        goal: create a new finegrained PAT with the predefined name, scopes and expiration from the URL, restrict it to the repositories ${{ steps.setup-autopuppeteer.outputs.repositories }}, the result should be the token value itself, make sure to record it because it cant be queried later (do not use "navigate back" to back out of the repo selection dialog, use the small x, the escape key, or click anywhere in the background)
+        url: https://github.com/settings/personal-access-tokens/new?name=${{ steps.setup-autopuppeteer.outputs.name }}&expires_in=${{ inputs.expiration }}&${{ steps.setup-autopuppeteer.outputs.permissions }}
         username: ${{ inputs.username }}
         password: ${{ inputs.password }}
         cookie: ${{ inputs.cookie }}
         openai_api_token: ${{ inputs.openai_api_token }}
-    - id: verify
-      shell: bash
+    - shell: bash
       run: |
         [ -r '${{ steps.autopuppeteer.outputs.result_path }}' ]
         token="$(cat ${{ steps.autopuppeteer.outputs.result_path }})"
