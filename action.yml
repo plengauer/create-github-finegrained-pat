@@ -4,10 +4,10 @@ inputs:
     description: 'The name of the token'
     required: true
   repositories:
-    description: 'A list (comma, semicolon, or linefeed separated) of repositories to restrict this repo to if any'
+    description: 'A list (comma, semicolon, or linefeed separated) of repositories to restrict this token to if any'
     default: ''
   permissions:
-    description: 'A list (comma, semicolon, or linefeed separated) of permissions key-value pairs (e.g., contents=write) to restrict this repo to if any'
+    description: 'A list (comma, semicolon, or linefeed separated) of permissions key-value pairs (e.g., contents=write) to restrict this token to if any'
     default: ''
   expiration:
     description: 'The relative expiration of the token in days'
