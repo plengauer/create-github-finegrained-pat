@@ -32,6 +32,7 @@ runs:
   using: composite
   steps:
     - id: metadata
+      shell: bash
       run: |
         cat <<< "${{ inputs.name }}" | cut -c 1-40 | sed 's/ /%20/g' | xargs -0 -I '{}' echo name='{}' >> "$GITHUB_OUTPUT"
         cat <<< "${{ inputs.repositories }}" | tr ',' '\n' | tr ';' '\n' | grep -v '^$' | tr '\n' ',' | sed 's/,/, /g' | xargs -0 -I '{}' echo repositories='{}' >> "$GITHUB_OUTPUT
@@ -46,6 +47,7 @@ runs:
         cookie: ${{ inputs.cookie }}
         openai_api_token: ${{ inputs.openai_api_token }}
     - id: verify
+      shell: bash
       run: |
         [ -r '${{ steps.autopuppeteer.outputs.result_path }}' ]
         token="$(cat ${{ steps.autopuppeteer.outputs.result_path }})"
