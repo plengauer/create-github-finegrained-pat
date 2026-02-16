@@ -1,4 +1,5 @@
 name: 'Create GitHub Fine-grained PAT'
+description: ''
 inputs:
   name:
     description: 'The name of the token'
@@ -46,6 +47,9 @@ runs:
         password: ${{ inputs.password }}
         cookie: ${{ inputs.cookie }}
         openai_api_token: ${{ inputs.openai_api_token }}
+        guardrail_patterns: |
+          ^ghp_[a-zA-Z0-9]{36}$
+          ^github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}$
     - shell: bash
       run: |
         [ -r '${{ steps.autopuppeteer.outputs.result_path }}' ]
