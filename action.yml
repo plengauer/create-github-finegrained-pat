@@ -22,9 +22,11 @@ inputs:
   cookie:
     description: 'A valid cookie of the user'
     required: true
-  openai_api_token:
+  openai_token:
     description: 'A valid API token for OpenAI'
     required: true
+  github_token:
+    default: ${{ github.token }}
 outputs:
   token_path:
     description: 'The path to a file containing the token'
@@ -46,7 +48,8 @@ runs:
         username: ${{ inputs.username }}
         password: ${{ inputs.password }}
         cookie: ${{ inputs.cookie }}
-        openai_api_token: ${{ inputs.openai_api_token }}
+        openai_token: ${{ inputs.openai_token }}
+        github_token:  ${{ inputs.github_token }}
         guardrail_patterns: |-
           ^ghp_[a-zA-Z0-9]{36}$
           ^github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}$
