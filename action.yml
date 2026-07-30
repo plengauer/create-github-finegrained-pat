@@ -43,7 +43,7 @@ runs:
     - id: autopuppeteer
       uses: plengauer/autopuppeteer@v0.14.3
       with:
-        goal: create a new finegrained PAT with the predefined name, scopes and expiration from the URL, restrict it to the repositories ${{ steps.setup-autopuppeteer.outputs.repositories }}, the result should be the token value itself, make sure to record it because it cant be queried later (do not use "navigate back" to back out of the repo selection dialog, use the small x, the escape key, or click anywhere in the background)
+        goal: Create a new finegrained PAT with the predefined name, scopes and expiration from the URL. Restrict it to the repositories ${{ steps.setup-autopuppeteer.outputs.repositories }}, the result should be the token value itself, make sure to record it because it cant be queried later. Do not use "navigate back" to back out of the repo selection dialog, use the small x, the escape key, or click anywhere in the background. If a limit about too many tokens is hit, you may delete one, to make space, but only expired ones. Never delete a token that is not expired.
         url: https://github.com/settings/personal-access-tokens/new?name=${{ steps.setup-autopuppeteer.outputs.name }}&expires_in=${{ inputs.expiration }}&${{ steps.setup-autopuppeteer.outputs.permissions }}
         username: ${{ inputs.username }}
         password: ${{ inputs.password }}
