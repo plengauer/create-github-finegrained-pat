@@ -4,15 +4,20 @@ on:
   workflow_run:
     workflows:
       - .github/workflows/copilot-setup-steps.yml
+      - Autobackport
       - Autorerun
       - Autoversion
       - CI
       - Claude
       - CodeQL
+      - Copilot
+      - Copilot cloud agent
       - Copilot code review
       - Copilot coding agent
       - OpenAI Codex
+      - Recompile Agentic Workflows
       - Renovate
+      - Report Failed Workflows
     types:
       - completed
 jobs:
