@@ -51,8 +51,11 @@ runs:
         openai_token: ${{ inputs.openai_token }}
         github_token:  ${{ inputs.github_token }}
         guardrail_patterns: |-
-          ^ghp_[a-zA-Z0-9]{36}$
-          ^github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}$
+          ghp_[a-zA-Z0-9]{36}
+          github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}
+          github_pat_[a-zA-Z0-9_]{20,}
+        guardrail_handler: |-
+          printf '{"credentials":["%s"]}' "$GUARDRAIL_MATCH" | curl --no-progress-meter --fail --request POST --header 'Accept: application/vnd.github+json' --header 'Content-Type: application/json' --data-binary @- "${GITHUB_API_URL:-https://api.github.com}"/credentials/revoke
     - shell: bash
       run: |
         [ -r '${{ steps.autopuppeteer.outputs.result_path }}' ]
